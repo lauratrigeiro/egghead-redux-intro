@@ -1,4 +1,4 @@
-// Intro to Redux Lesson 7: Implementing Store from Scratch
+// Intro to Redux Lesson 8: React Counter Example
 
 // Reducer
 const counter = (state = 0, action) => {
@@ -12,46 +12,41 @@ const counter = (state = 0, action) => {
   }
 }
 
-// const { createStore } = Redux;
-// import { createStore } from 'redux';
+// React DOM Component (no business logic)
+const Counter = ({
+  value,
+  onIncrement,
+  onDecrement
+}) => (
+  <div>
+    <h1>{value}</h1>
+    <button onClick={onIncrement}>+</button>
+    <button onClick={onDecrement}>-</button>
+  </div>
+);
 
-const createStore = (reducer) => {
-  let state;
-  let listeners = [];
-
-  const getState = () => state;
-
-  const dispatch = (action) => {
-    state = reducer(state, action);
-    listeners.forEach(listener => listener());
-  };
-
-  const subscribe = (listener) => {
-    listeners.push(listener);
-    // return an unsubscribe method
-    return () => {
-      listeners = listeners.filter(l => l !== listener);
-    };
-  };
-
-  // reducer returns initial value
-  dispatch({});
-
-  return { getState, dispatch, subscribe };
-};
+const { createStore } = Redux;
 
 // Set reducer
 const store = createStore(counter);
 
-// get current state of the store: 0
-// console.log(store.getState());
-
-// send action to the store
-// store.dispatch({ type: 'INCREMENT' });
-// console.log(store.getState());
-
 const render = () => {
-  document.body.innerText = store.getState();
+  ReactDOM.render(
+    <Counter
+      value={store.getState()}
+      onIncrement={() =>
+        store.dispatch({
+         type: 'INCREMENT'
+        })
+      }
+      onDecrement={() =>
+        store.dispatch({
+         type: 'DECREMENT'
+        })
+      }
+    />,
+    document.getElementById('root')
+  );
 };
 
 // register a callback that store will call
@@ -59,7 +54,3 @@ const render = () => {
 store.subscribe(render);
 // Show initial state
 render();
-
-document.addEventListener('click', () => {
-  store.dispatch({ type: 'INCREMENT' })
-})
