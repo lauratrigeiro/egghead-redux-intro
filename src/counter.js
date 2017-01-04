@@ -1,8 +1,6 @@
-// Intro to Redux Lesson 5: Writing a Counter Reducer with Tests
+// Intro to Redux Lesson 6: Store Methods: getState(), dispatch(), and subscribe()
 
-// In JSBin HTML file include:
-// <script src="https://cdnjs.cloudflare.com/ajax/libs/expect/1.20.2/expect.min.js"></script>
-
+// Reducer
 const counter = (state = 0, action) => {
   switch (action.type) {
     case 'INCREMENT':
@@ -14,28 +12,29 @@ const counter = (state = 0, action) => {
   }
 }
 
-expect(
-  counter(0, { type: 'INCREMENT' })
-).toEqual(1);
+const { createStore } = Redux;
+// import { createStore } from 'redux';
 
-expect(
-  counter(1, { type: 'INCREMENT' })
-).toEqual(2);
+// Set reducer
+const store = createStore(counter);
 
-expect(
-  counter(2, { type: 'DECREMENT' })
-).toEqual(1);
+// get current state of the store: 0
+// console.log(store.getState());
 
-expect(
-  counter(1, { type: 'DECREMENT' })
-).toEqual(0);
+// send action to the store
+// store.dispatch({ type: 'INCREMENT' });
+// console.log(store.getState());
 
-expect(
-  counter(1, { type: 'SOMETHING_ELSE' })
-).toEqual(1);
+const render = () => {
+  document.body.innerText = store.getState();
+};
 
-expect(
-  counter(undefined, {})
-).toEqual(0);
+// register a callback that store will call
+// anytime an action is dispatched
+store.subscribe(render);
+// Show initial state
+render();
 
-console.log('Tests passed!')
+document.addEventListener('click', () => {
+  store.dispatch({ type: 'INCREMENT' })
+})
